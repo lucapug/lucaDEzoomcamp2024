@@ -14,3 +14,17 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
+resource "google_storage_bucket" "demo-bucket" {
+  name          = "dtc-de-zoomcamp-2024-demo-bucket"
+  location      = "EU"
+  force_destroy = true
+
+  lifecycle_rule {
+    condition {
+      age = 1
+    }
+    action {
+      type = "AbortIncompleteMultipartUpload"
+    }
+  }
+}
