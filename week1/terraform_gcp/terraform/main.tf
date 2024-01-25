@@ -14,17 +14,31 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
-resource "google_storage_bucket" "demo-bucket" {
-  name          = "dtc-de-zoomcamp-2024-demo-bucket"
-  location      = "EU"
-  force_destroy = true
+resource "google_storage_bucket" "data-lake-bucket" {
+  name     = "dtc-de-zoomcamp-2024-data-lake-bucket"
+  location = "EU"
 
+  # Optional, but recommended settings:
+  storage_class               = "STANDARD"
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
   lifecycle_rule {
-    condition {
-      age = 1
-    }
     action {
-      type = "AbortIncompleteMultipartUpload"
+      type = "Delete"
+    }
+    condition {
+      age = 30 // days
     }
   }
+
+  force_destroy = true
+}
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = "bq_dataset"
+  project    = "dtc-de-zoomcamp-2024"
+  location   = "EU"
 }
