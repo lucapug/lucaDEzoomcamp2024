@@ -43,3 +43,4 @@ operations/variable-scripts/variable.json
 .sentinel
 
 *.json
+*.parquet
