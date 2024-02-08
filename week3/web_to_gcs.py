@@ -76,8 +76,6 @@ def web_to_gcs(year, service):
         print(f"Local: {file_name}")
 
         # read it back into a parquet file
-        # df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
-        # df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime) 
         parse_dates = ['tpep_pickup_datetime', 'tpep_dropoff_datetime']
         df = pd.read_csv(file_name, compression='gzip', parse_dates=parse_dates)
         file_name = file_name.replace('.csv.gz', '.parquet')
@@ -94,4 +92,4 @@ def web_to_gcs(year, service):
 #web_to_gcs('2019', 'green')
 #web_to_gcs('2020', 'green')
 #web_to_gcs('2019', 'yellow') #lots of problems with this one, solved with schema.
-web_to_gcs('2020', 'yellow')
+#web_to_gcs('2020', 'yellow')
