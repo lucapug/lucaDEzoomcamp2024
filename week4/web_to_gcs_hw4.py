@@ -17,7 +17,7 @@ Pre-reqs:
 init_url = 'https://d37ci6vzurychx.cloudfront.net/trip-data'
 
 # switch out the bucketname
-BUCKET = os.environ.get("GCP_GCS_BUCKET", "lucapug-taxi-data")
+BUCKET = os.environ.get("GCP_GCS_BUCKET", "lucapug-taxi-data-us")
 
 
 table_schema_fhv = pa.schema(
