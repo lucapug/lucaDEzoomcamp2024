@@ -5,6 +5,9 @@ import pandas as pd
 from google.cloud import storage
 import pyarrow as pa
 
+from pyarrow.parquet import ParquetFile
+import pyarrow.parquet as pq
+
 """
 Pre-reqs: 
 1. `pip install pandas pyarrow google-cloud-storage`
@@ -24,11 +27,10 @@ table_schema_fhv = pa.schema(
     [
         ('dispatching_base_num',pa.string()),
         ('pickup_datetime',pa.timestamp('s')),
-        ('dropoff_datetime',pa.timestamp('s')),
-        ('PULocationID',pa.int64()),
-        ('DOLocationID',pa.int64()),
-        ('SR_Flag',pa.string()),
-        ('Affiliated_base_number',pa.string())
+        ('dropOff_datetime',pa.timestamp('s')),
+        ('PUlocationID',pa.int64()),
+        ('DOlocationID',pa.int64()),
+        ('SR_Flag',pa.int64()),
     ]
 )
 
@@ -64,15 +66,31 @@ def web_to_gcs(year, service):
         open(file_name, 'wb').write(r.content)
         print(f"Local: {file_name}")
         
-        # Impose schema to parquet via pandas read_parquet
-        df = pd.read_parquet(file_name, engine = 'pyarrow', schema=table_schema_fhv)
-        df.to_parquet(file_name, engine='pyarrow', schema = table_schema_fhv)
+        # # Impose schema to parquet via pandas read_parquet
+        # #df = pd.read_parquet(file_name, engine = 'pyarrow', schema=table_schema_fhv)        
+        # df = pd.read_parquet(file_name, engine = 'pyarrow')        
+        # df.to_parquet(file_name, engine='pyarrow', schema = table_schema_fhv)
+        # #df.to_parquet(file_name, engine='pyarrow')        
+        # print(f"Local with schema imposed: {file_name}") 
+
+        # Read metadata 
+        #print(pq.read_metadata(file_name))
+        
+        # Read file, read the table from file and check schema
+        file = pq.ParquetFile(file_name)
+        table = file.read()
+        #print(table.schema )       
+
+        # Convert to pandas and check data 
+        df = table.to_pandas()
+        #print(df.info())
+
+        # Impose schema to parquet
+        df.to_parquet(file_name, engine='pyarrow', schema = table_schema_fhv)    
         print(f"Local with schema imposed: {file_name}") 
-                       
+                               
         # upload it to gcs 
         upload_to_gcs(BUCKET, f"{service}/{file_name}", file_name)
         print(f"GCS uploaded: {service}/{file_name}")
-
-
 
 web_to_gcs('2019', 'fhv')
