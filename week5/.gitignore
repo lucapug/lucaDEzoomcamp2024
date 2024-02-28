@@ -195,3 +195,9 @@ target/
 # PyCharm and VirtualEnv
 .idea
 .venv
+
+
+
+# mine
+*.csv
+notebooks/zones/
