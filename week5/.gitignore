@@ -202,4 +202,5 @@ target/
 *.csv
 notebooks/zones/
 notebooks/fhvhv/
+notebooks/fhv/
 data/
